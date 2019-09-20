@@ -1,6 +1,6 @@
 findMediasRoute() {
   add_response_header "Content-Type" "application/json"
-  results=$(tree "$DATA_PATH$1" -J)
+  results=$(tree "$DATA_PATH$1" -J -P "*.mkv")
   send_response_ok_exit <<< $results 
 }
 
@@ -21,8 +21,8 @@ shiftSubtitlesRoute() {
   TIME=$(echo $2 | awk -F'[?=&]' '{print $3}')
   SUBTITLE_FILE="$DATA_PATH/$(urldecode $URL)"
   if [ -f "$SUBTITLE_FILE" ]; then
-    /usr/bin/env bash ./subsync.sh "$TIME seconds" < "$SUBTITLE_FILE" > "$SUBTITLE_FILE.tmp"
-    mv "$SUBTITLE_FILE.tmp" "$SUBTITLE_FILE"
+    require subsync
+    subSync "$TIME seconds" "$SUBTITLE_FILE"
     STATUS="RE-SYNC"
   else
     STATUS="FILE_NOT_FOUND"
