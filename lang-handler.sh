@@ -8,5 +8,5 @@ findSubtitle() {
 }
 
 SUBTITLES=()
-SUBTITLES+=($(findSubtitle "fr"))
-SUBTITLES+=($(findSubtitle "en"))
+SUBTITLES+=("$(findSubtitle "fr")")
+SUBTITLES+=("$(findSubtitle "en")")
