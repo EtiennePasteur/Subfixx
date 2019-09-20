@@ -15,8 +15,26 @@ mediaHasSubtitlesRoute() {
   send_response_ok_exit <<< $results
 }
 
-on_uri_match '^/api/subtitles/(.*)$' mediaHasSubtitlesRoute
+shiftSubtitlesRoute() {
+  add_response_header "Content-Type" "application/json"
+  URL=$(echo $2 | awk -F'[?=&]' '{print $1}')
+  TIME=$(echo $2 | awk -F'[?=&]' '{print $3}')
+  SUBTITLE_FILE="$DATA_PATH/$(urldecode $URL)"
+  if [ -f "$SUBTITLE_FILE" ]; then
+    /usr/bin/env bash ./subsync.sh "$TIME seconds" < "$SUBTITLE_FILE" > "$SUBTITLE_FILE.tmp"
+    mv "$SUBTITLE_FILE.tmp" "$SUBTITLE_FILE"
+    STATUS="RE-SYNC"
+  else
+    STATUS="FILE_NOT_FOUND"
+  fi
+  results=$(jq -n ".status = \"$STATUS\"")
+  send_response_ok_exit <<< $results
+}
 
 on_uri_match '^/api/find/tvshows(/*)$' findMediasRoute "/$TV_SHOWS_FOLDER_NAME"
 on_uri_match '^/api/find/movies(/*)$' findMediasRoute "/$MOVIES_FOLDER_NAME"
 on_uri_match '^/api/find(/*)$' findMediasRoute "/"
+
+on_uri_match '^/api/subtitles/find(.*)$' mediaHasSubtitlesRoute
+
+on_uri_match '^/api/subtitles/shift(.*)$' shiftSubtitlesRoute

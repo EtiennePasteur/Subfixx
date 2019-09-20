@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-DATA_PATH="/Users/pasteu_e/Documents/Work/Subfixx/data"
+#DATA_PATH="/Users/pasteu_e/Documents/Work/Subfixx/data"
+DATA_PATH="/home/epasteur/Projects/Subfixx/data"
+
 TV_SHOWS_FOLDER_NAME="TV Shows"
 MOVIES_FOLDER_NAME="Movies"
 
